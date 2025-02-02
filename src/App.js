@@ -1,25 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
+import './index.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import Router and Routes
+import Dashboard from './components/Dashboard'; // Assuming Dashboard is in the components folder
+import LoginPage from './components/LoginPage'; // Assuming LoginPage is in the components folder
+import SignupPage from './components/SignUpPage';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="bg-gray-100 min-h-screen">
+        <Routes>
+          {/* Route for Dashboard */}
+          <Route path="/" element={<Dashboard />} />
+
+          {/* Route for Login Page */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Route for SignUp Page */}
+          <Route path="/signup" element={<SignupPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
