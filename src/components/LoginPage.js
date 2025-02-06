@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginPage = () => {
   const [number, setMobileNumber] = useState('');
@@ -17,29 +18,39 @@ const LoginPage = () => {
       const response = await axios.post('https://penza-api.onrender.com/api/v1/user/login', {
         number,
         password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // Specify that the request body is in JSON format
-        },
-        withCredentials: true, // This ensures that cookies are included in the request
-      }
-    );
-
+      });
       console.log(response);
 
       if (response.data.success) {
-        localStorage.setItem('accessToken', response.data.data.accessToken); // Save token
-        localStorage.setItem('refreshToken', response.data.data.refreshToken); // Save token
-        navigate('/'); // Redirect to home page
+        const accessToken = response.data.data.accessToken;
+        const refreshToken = response.data.data.refreshToken;
+
+        const deCoded = jwtDecode(accessToken);
+        console.log('DECODED TOKEN:', deCoded);
+        
+        // Store tokens
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+
+        // Check user role
+        const decoded = jwtDecode(accessToken);
+        
+        // Redirect based on role
+        if (decoded.role === 'Admin') {
+          navigate('/');
+        } else {
+          navigate('/');
+        }
+
       } else {
         setErrorMessage('Invalid details. Please try again.');
       }
     } catch (error) {
-      setErrorMessage('An error occurred. Please try again.');
+      setErrorMessage(error.response?.data?.message || 'An error occurred. Please try again.');
     }
   };
 
+  // Keep the return statement exactly the same
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

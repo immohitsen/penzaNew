@@ -7,14 +7,36 @@ import {
   EyeIcon,
   CreditCardIcon,
 } from "@heroicons/react/24/outline";
-import user from "./assets/user.png";
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import userAvatar from "./assets/user.png";
 
 const Topbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Profile");
+  const [user, setUser] = useState(null);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Get user data from JWT token
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser({
+          name: decoded.fullName || 'Guest User',
+          role: decoded.role || 'User',
+          email: decoded.email || '',
+          number: decoded.number || '',
+          avatar: userAvatar // You can replace with decoded.avatar if available
+        });
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+
+    // Click outside handler
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
@@ -25,6 +47,14 @@ const Topbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    navigate('/login');
+  };
+
+  if (!user) return null; // Or loading spinner
 
   return (
     <div className="w-full flex items-center justify-between bg-white shadow-sm px-6 py-4">
@@ -42,22 +72,43 @@ const Topbar = () => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="w-10 h-10 rounded-full overflow-hidden border border-gray-300 hover:ring-2 hover:ring-blue-400"
           >
-            <img src={user} alt="profile" className="w-full h-full object-cover" />
+            <img 
+              src={user.avatar} 
+              alt="profile" 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `https://ui-avatars.com/api/?name=${user.name}&background=random`;
+              }}
+            />
           </button>
 
           {dropdownOpen && (
             <div className="absolute right-0 mt-3 w-64 bg-white rounded-lg shadow-lg py-2 border border-gray-200">
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-3">
-                  <img src={user} alt="User" className="w-10 h-10 rounded-full object-cover" />
+                  <img 
+                    src={user.avatar} 
+                    alt="User" 
+                    className="w-10 h-10 rounded-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = `https://ui-avatars.com/api/?name=${user.name}&background=random`;
+                    }}
+                  />
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-800">Raveesh Kumar</h4>
-                    <p className="text-xs text-gray-500">UI/UX Designer</p>
+                    <h4 className="text-sm font-semibold text-gray-800">{user.name}</h4>
+                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                    <p className="text-xs text-gray-500">{user.number}</p>
                   </div>
                 </div>
-                <PowerIcon className="h-5 w-5 text-gray-500 cursor-pointer hover:text-gray-800" />
+                <PowerIcon 
+                  className="h-5 w-5 text-gray-500 cursor-pointer hover:text-gray-800" 
+                  onClick={handleLogout}
+                />
               </div>
 
+              {/* Rest of the dropdown content remains the same */}
               <div className="flex justify-around border-b">
                 <button
                   className={`flex-1 py-2 text-sm font-medium ${
@@ -100,7 +151,10 @@ const Topbar = () => {
                     </button>
                   </>
                 )}
-                <button className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-lg">
+                <button 
+                  className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-lg"
+                  onClick={handleLogout}
+                >
                   Logout
                 </button>
               </div>
