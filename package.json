@@ -41,6 +41,8 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.x.x",
+    "babel-loader": "^8.x.x",
     "ajv": "^7.2.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
