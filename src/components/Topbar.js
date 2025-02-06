@@ -28,7 +28,7 @@ const Topbar = () => {
 
   return (
     <div className="w-full flex items-center justify-between bg-white shadow-sm px-6 py-4">
-      <div className="text-xl font-semibold text-gray-800">Customer Dashboard</div>
+      <div className="text-xl font-semibold text-gray-800">Dashboard</div>
 
       <div className="flex items-center gap-4 relative">
         <input
