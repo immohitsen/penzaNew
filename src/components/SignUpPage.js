@@ -8,7 +8,6 @@ import {
   EyeSlashIcon,
   PhoneIcon,
 } from "@heroicons/react/24/outline";
-import { jwtDecode } from "jwt-decode";
 
 const SignupPage = () => {
   const [fullName, setFullName] = useState("");
@@ -18,38 +17,14 @@ const SignupPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Check admin authentication on component mount
+  // Simple token check (not role-based)
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-
     if (!accessToken) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const decoded = jwtDecode(accessToken);
-      const adminNumbers = ['9260911000'];
-
-      // Check token expiration
-      if (decoded.exp * 1000 < Date.now()) {
-        throw new Error("Token expired");
-      }
-
-      // Verify admin role - adjust this condition based on your JWT structure
-      if (!adminNumbers.includes(decoded.number)) {
-        navigate('/');
-      }
-
-      // If all checks pass, stay on the page
-      console.log("Admin access granted");
-    } catch (error) {
-      console.error("Authentication error:", error);
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
       navigate("/login");
     }
   }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const accessToken = localStorage.getItem("accessToken");
@@ -64,24 +39,18 @@ const SignupPage = () => {
           },
         }
       );
-      console.log(response);
 
       if (response.data.success) {
-        navigate("/"); // Redirect to admin dashboard after successful creation
+        navigate("/");
       } else {
-        setErrorMessage(
-          response.data.message || "User creation failed. Please try again."
-        );
+        setErrorMessage("User creation failed");
       }
     } catch (error) {
-      if (error.response?.status === 401) {
-        // Handle expired/invalid token
+      if (error.response?.status === 401 || error.response?.status === 403) {
         localStorage.removeItem("accessToken");
         navigate("/login");
       }
-      setErrorMessage(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
+      setErrorMessage("Action not allowed");
     }
   };
 
