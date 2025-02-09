@@ -1,16 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   HomeIcon,
   UsersIcon,
   Cog6ToothIcon,
   BellIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
   const menuItems = [
     { name: "Dashboard", icon: <HomeIcon className="h-6 w-6" />, active: true },
     {
@@ -31,24 +27,10 @@ const Sidebar = () => {
   ];
 
   return (
-    <div
-      className={`h-screen flex flex-col bg-white text-gray-900 shadow-md border-r border-gray-300 transition-all duration-300 ${
-        isExpanded ? "w-64" : "w-20"
-      }`}
-    >
-      {/* Toggle Button */}
-      <div className="p-4 flex justify-between items-center border-b border-gray-300">
-        {isExpanded && <span className="text-xl font-bold">Penza</span>}
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 rounded-full hover:bg-gray-200"
-        >
-          {isExpanded ? (
-            <ArrowLeftIcon className="h-6 w-6" />
-          ) : (
-            <ArrowRightIcon className="h-6 w-6" />
-          )}
-        </button>
+    <div className="h-full flex flex-col bg-white text-gray-900 shadow-md border-r border-gray-300 w-64">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-300">
+        <span className="text-xl font-bold">Penza</span>
       </div>
 
       {/* Navigation */}
@@ -63,14 +45,14 @@ const Sidebar = () => {
             }`}
           >
             {item.icon}
-            {isExpanded && <span className="text-sm">{item.name}</span>}
+            <span className="text-sm">{item.name}</span>
           </div>
         ))}
       </nav>
 
       {/* Footer */}
       <div className="px-4 py-4 border-t border-gray-300 text-center text-sm text-gray-600">
-        {isExpanded ? "© 2025 Penza" : "© 25"}
+        © 2025 Penza
       </div>
     </div>
   );

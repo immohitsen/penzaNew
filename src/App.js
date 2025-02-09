@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import Dashboard from './components/Dashboard'; // Assuming Dashboard is in the components folder
 import LoginPage from './components/LoginPage'; // Assuming LoginPage is in the components folder
 import SignupPage from './components/SignUpPage';
+import ProfilePage from './components/ProfilePage';
+
+
 
 const App = () => {
   return (
@@ -18,6 +21,9 @@ const App = () => {
 
           {/* Route for SignUp Page */}
           <Route path="/signup" element={<SignupPage />} />
+
+          {/* Route for Profile Page */}
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </div>
     </Router>

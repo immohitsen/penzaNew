@@ -9,6 +9,11 @@ import {
   PhoneIcon,
 } from "@heroicons/react/24/outline";
 
+
+const host = process.env.REACT_APP_host;
+
+
+
 const SignupPage = () => {
   const [fullName, setFullName] = useState("");
   const [number, setNumber] = useState("");
@@ -31,7 +36,7 @@ const SignupPage = () => {
 
     try {
       const response = await axios.post(
-        "https://penza-api.onrender.com/api/v1/user/register",
+        `${host}/api/v1/user/register`,
         { fullName, number, password },
         {
           headers: {

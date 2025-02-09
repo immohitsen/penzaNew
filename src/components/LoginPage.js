@@ -7,6 +7,9 @@ import {
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
 
+
+const host = process.env.REACT_APP_host;
+
 const LoginPage = () => {
   const [number, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -14,12 +17,14 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    
     try {
       const response = await axios.post(
-        "https://penza-api.onrender.com/api/v1/user/login",
+        `${host}/api/v1/user/login`,
         {
           number,
           password,
