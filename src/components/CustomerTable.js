@@ -7,7 +7,6 @@ import AddTicketModal from "./modals/CreateTicketModal"; // New import for add t
 
 const host = process.env.REACT_APP_host;
 
-
 const TicketTable = () => {
   // State management
   const [tickets, setTickets] = useState([]);
@@ -70,9 +69,18 @@ const TicketTable = () => {
 
   const fetchTickets = async () => {
     try {
-      const response = await axios.get(`${host}/api/v1/ticket/`, {
-        withCredentials: true,
-      });
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${host}/api/v1/ticket/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        {
+          withCredentials: true,
+        }
+      );
       setTickets(response.data.data);
     } catch (error) {
       console.error("Error fetching tickets:", error);
