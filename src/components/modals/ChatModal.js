@@ -3,7 +3,6 @@ import axios from "axios";
 import { X } from "lucide-react";
 import userAvatar from "../assets/user.png"; // Adjust the path as needed
 
-
 const host = process.env.REACT_APP_host;
 
 const ChatModal = ({ showModal, setShowModal, chatTicket }) => {
@@ -31,9 +30,17 @@ const ChatModal = ({ showModal, setShowModal, chatTicket }) => {
       };
 
       // Send the new message to your API endpoint
+      const token = localStorage.getItem("accessToken");
+
       const response = await axios.post(
         `${host}/api/v1/ticket/chat?id=${chatTicket._id}`,
         payload,
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
         { withCredentials: true }
       );
 
@@ -125,11 +132,14 @@ const ChatModal = ({ showModal, setShowModal, chatTicket }) => {
                       : message;
                   const timeString =
                     typeof message === "object" && message.createdAt
-                      ? new Date(message.createdAt).toLocaleTimeString("en-US", {
-                          hour: "numeric",
-                          minute: "numeric",
-                          hour12: true,
-                        })
+                      ? new Date(message.createdAt).toLocaleTimeString(
+                          "en-US",
+                          {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          }
+                        )
                       : "";
                   return (
                     <div key={index} className="flex items-start gap-4 mb-4">
