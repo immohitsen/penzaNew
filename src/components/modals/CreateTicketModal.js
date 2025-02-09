@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
 
-
 const host = process.env.REACT_APP_host;
 
 const AddTicketModal = ({ showModal, setShowModal, onTicketCreated }) => {
@@ -38,9 +37,15 @@ const AddTicketModal = ({ showModal, setShowModal, onTicketCreated }) => {
     setCreating(true);
     setError("");
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${host}/api/v1/ticket/create`,
         formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
         { withCredentials: true }
       );
       // Optionally, call a callback to update the ticket list in your parent component

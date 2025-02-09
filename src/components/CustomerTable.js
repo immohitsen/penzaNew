@@ -99,9 +99,18 @@ const TicketTable = () => {
     setTickets(tickets.filter((ticket) => ticket._id !== id));
 
     try {
-      await axios.delete(`${host}/api/v1/ticket/delete?id=${id}`, {
-        withCredentials: true,
-      });
+      const token = localStorage.getItem("accessToken");
+      await axios.delete(
+        `${host}/api/v1/ticket/delete?id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        {
+          withCredentials: true,
+        }
+      );
       setSuccessMessage("Ticket deleted successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
@@ -146,9 +155,19 @@ const TicketTable = () => {
 
     try {
       const { _id, createdAt, ...updateData } = formData;
-      await axios.post(`${host}/api/v1/ticket/update?id=${_id}`, updateData, {
-        withCredentials: true,
-      });
+      const token = localStorage.getItem("accessToken");
+      await axios.post(
+        `${host}/api/v1/ticket/update?id=${_id}`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        {
+          withCredentials: true,
+        }
+      );
       setShowModal(false);
       setSuccessMessage("Ticket updated successfully!");
       setTimeout(() => setSuccessMessage(""), 3000);
@@ -337,20 +356,6 @@ const TicketTable = () => {
         {successMessage && (
           <div className="bg-green-500 text-white p-4 rounded-lg shadow-lg">
             {successMessage}
-          </div>
-        )}
-        {deletedTicket && (
-          <div className="bg-gray-800 text-white p-4 rounded-lg shadow-lg flex items-center gap-4">
-            <span>Ticket deleted</span>
-            <button
-              onClick={() => {
-                setTickets([...tickets, deletedTicket]);
-                setDeletedTicket(null);
-              }}
-              className="underline hover:text-gray-300"
-            >
-              Undo
-            </button>
           </div>
         )}
       </div>
